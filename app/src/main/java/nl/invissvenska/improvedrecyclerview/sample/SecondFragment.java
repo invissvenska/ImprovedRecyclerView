@@ -7,28 +7,58 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import nl.invissvenska.improvedrecyclerview.ImprovedRecyclerView;
+import nl.invissvenska.improvedrecyclerview.sample.adapters.SimpleAdapter;
 
 public class SecondFragment extends Fragment {
 
+    private static final List<String> ITEMS = Collections.unmodifiableList(Arrays.asList(
+            "First",
+            "Second",
+            "Third",
+            "Fourth",
+            "Fifth",
+            "Sixth",
+            "Seventh",
+            "Eight",
+            "Ninth",
+            "Tenth"
+    ));
+
+    ImprovedRecyclerView recyclerView;
+    View emptyView;
+    SimpleAdapter adapter;
+
     @Override
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_second, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_second, container, false);
+
+        recyclerView = view.findViewById(R.id.recycler_view);
+        emptyView = view.findViewById(R.id.empty_view);
+
+        return view;
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        view.findViewById(R.id.button_second).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(SecondFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
-            }
-        });
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setEmptyView(emptyView);
+
+        adapter = new SimpleAdapter(getContext());
+
+        recyclerView.setAdapter(adapter);
+        adapter.addAll(ITEMS);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

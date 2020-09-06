@@ -92,6 +92,34 @@ public class NextPageFragment extends Fragment implements SimpleAdapter.OnNextPa
 }
 ```
 
+### Grid layout
+Just use a GridLayoutManager instead of a LinearLayoutManager. If you want to use header and footer in your layout you can use the `setSpanSizeLookup` method set the full with of the RecyclerView to the header and footer.  
+```java
+final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+    @Override
+    public int getSpanSize(int position) {
+        switch(adapter.getItemViewType(position)) {
+            case SimpleAdapter.TYPE_HEADER:
+            case SimpleAdapter.TYPE_FOOTER:
+                return layoutManager.getSpanCount();
+            case SimpleAdapter.TYPE_ITEM:
+            default:
+                return 1;
+        }
+    }
+});
+recyclerView.setLayoutManager(layoutManager);
+recyclerView.setEmptyView(emptyView);
+
+adapter = new SimpleAdapter(getContext());
+recyclerView.setAdapter(adapter);
+adapter.addAll(ITEMS);
+
+adapter.setHeader(R.layout.item_header);
+adapter.setFooter(R.layout.item_footer);
+```
+
 ## Screenshots
 
 **Please click the image below to enlarge.**

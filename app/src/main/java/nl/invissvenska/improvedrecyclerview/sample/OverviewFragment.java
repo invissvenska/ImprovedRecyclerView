@@ -43,5 +43,13 @@ public class OverviewFragment extends Fragment {
                         .navigate(R.id.action_OverviewFragment_to_EmptyViewFragment);
             }
         });
+
+        view.findViewById(R.id.button_grid).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavHostFragment.findNavController(OverviewFragment.this)
+                        .navigate(R.id.action_OverviewFragment_to_GridFragment);
+            }
+        });
     }
 }

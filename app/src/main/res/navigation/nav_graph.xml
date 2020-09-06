@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_OverviewFragment_to_EmptyViewFragment"
             app:destination="@id/EmptyViewFragment" />
+        <action
+            android:id="@+id/action_OverviewFragment_to_GridFragment"
+            app:destination="@id/GridFragment" />
     </fragment>
     <fragment
         android:id="@+id/SimpleFragment"
@@ -48,7 +51,17 @@
         tools:layout="@layout/fragment_emptyview">
 
         <action
-            android:id="@+id/action_NextPageFragment_to_OverviewFragment"
+            android:id="@+id/action_EmptyViewFragment_to_OverviewFragment"
+            app:destination="@id/OverviewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/GridFragment"
+        android:name="nl.invissvenska.improvedrecyclerview.sample.GridFragment"
+        android:label="@string/grid_fragment_label"
+        tools:layout="@layout/fragment_grid">
+
+        <action
+            android:id="@+id/action_GridFragment_to_OverviewFragment"
             app:destination="@id/OverviewFragment" />
     </fragment>
 </navigation>

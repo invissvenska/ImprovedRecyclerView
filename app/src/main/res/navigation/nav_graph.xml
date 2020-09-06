@@ -12,8 +12,11 @@
         tools:layout="@layout/fragment_overview">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            android:id="@+id/action_OverviewFragment_to_SimpleFragment"
             app:destination="@id/SimpleFragment" />
+        <action
+            android:id="@+id/action_OverviewFragment_to_NextPageFragment"
+            app:destination="@id/NextPageFragment" />
     </fragment>
     <fragment
         android:id="@+id/SimpleFragment"

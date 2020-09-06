@@ -148,6 +148,15 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
         this.listener = listener;
     }
 
+    public void setOnNextPageListener(OnNextPageListener listener, int nextPageOffset) {
+        this.nextPageOffset = nextPageOffset;
+        setOnNextPageListener(listener);
+    }
+
+    public void setOnNextPageListener(OnNextPageListener nextPageListener) {
+        this.nextPageListener = nextPageListener;
+    }
+
     public void cancel() {
         isCancelled = true;
     }

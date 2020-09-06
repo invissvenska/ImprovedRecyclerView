@@ -25,7 +25,7 @@ public class OverviewFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(OverviewFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                        .navigate(R.id.action_OverviewFragment_to_SimpleFragment);
             }
         });
 
@@ -33,7 +33,7 @@ public class OverviewFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(OverviewFragment.this)
-                        .navigate(R.id.action_NextPageFragment_to_OverviewFragment);
+                        .navigate(R.id.action_OverviewFragment_to_NextPageFragment);
             }
         });
     }

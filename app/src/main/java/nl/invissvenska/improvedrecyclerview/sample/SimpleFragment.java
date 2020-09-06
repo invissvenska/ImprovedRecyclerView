@@ -43,9 +43,9 @@ public class SimpleFragment extends Fragment implements SimpleAdapter.OnClickLis
             "Twenty"
     ));
 
-    ImprovedRecyclerView recyclerView;
-    View emptyView;
-    SimpleAdapter adapter;
+    private ImprovedRecyclerView recyclerView;
+    private View emptyView;
+    private SimpleAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

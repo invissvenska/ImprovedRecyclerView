@@ -82,7 +82,7 @@ public class NextPageFragment extends Fragment implements SimpleAdapter.OnClickL
 
     @Override
     public void onScrolledToNextPage() {
-        // Simulate network call by showing progress dialog and adding data to adapter with some delay.
+        // Simulate network call by showing progressbar and adding data to adapter with some delay.
         progressBar.setVisibility(View.VISIBLE);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

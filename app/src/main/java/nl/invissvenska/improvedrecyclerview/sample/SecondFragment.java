@@ -19,16 +19,26 @@ import nl.invissvenska.improvedrecyclerview.sample.adapters.SimpleAdapter;
 public class SecondFragment extends Fragment {
 
     private static final List<String> ITEMS = Collections.unmodifiableList(Arrays.asList(
-            "First",
-            "Second",
-            "Third",
-            "Fourth",
-            "Fifth",
-            "Sixth",
-            "Seventh",
+            "One",
+            "Two",
+            "Three asdf asdfasd fasdfasdf asdfdasdf",
+            "Four",
+            "Five",
+            "Six",
+            "Seven",
             "Eight",
-            "Ninth",
-            "Tenth"
+            "Nine",
+            "Ten",
+            "Eleven",
+            "Twelve",
+            "Thirteen",
+            "Fourteen",
+            "Fifteen",
+            "Sixteen",
+            "Seventeen",
+            "Eighteen",
+            "Nineteen",
+            "Twenty"
     ));
 
     ImprovedRecyclerView recyclerView;
@@ -52,6 +62,9 @@ public class SecondFragment extends Fragment {
         recyclerView.setEmptyView(emptyView);
 
         adapter = new SimpleAdapter(getContext());
+
+        adapter.setHeader(R.layout.item_header);
+        adapter.setFooter(R.layout.item_footer);
 
         recyclerView.setAdapter(adapter);
         adapter.addAll(ITEMS);

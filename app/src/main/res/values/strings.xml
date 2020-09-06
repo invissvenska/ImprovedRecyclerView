@@ -13,4 +13,6 @@
 
 
     <string name="empty_list">There are no items in collection.</string>
+    <string name="footer">Example footer</string>
+    <string name="header">Example header</string>
 </resources>

@@ -1,8 +1,14 @@
 package nl.invissvenska.improvedrecyclerview;
 
+import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -18,6 +24,8 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
     private Context context;
     protected List<E> items;
     protected boolean isLoading = false;
+    private View footerView;
+    private View headerView;
     private RecyclerView.LayoutManager layoutManager;
 
 
@@ -34,9 +42,42 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
         isLoading = loading;
     }
 
+    @NonNull
+    @Override
+    public ImprovedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case TYPE_HEADER:
+                return onCreateHeaderViewHolder();
+            case TYPE_FOOTER:
+                return onCreateFooterViewHolder();
+            default:
+                return onCreateItemViewHolder(parent, viewType);
+        }
+    }
+
+    protected ImprovedViewHolder onCreateHeaderViewHolder() {
+        return new ImprovedHeaderFooterViewHolder(headerView);
+    }
+
+    protected ImprovedViewHolder onCreateFooterViewHolder() {
+        return new ImprovedHeaderFooterViewHolder(footerView);
+    }
+
+    protected abstract ImprovedViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType);
+
     @Override
     public int getItemCount() {
-        return items != null ? items.size() : 0;
+        int itemCount = items != null ? items.size() : 0;
+
+        if (hasFooter()) {
+            itemCount++;
+        }
+
+        if (hasHeader()) {
+            itemCount++;
+        }
+
+        return itemCount;
     }
 
     @Override
@@ -58,6 +99,17 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
                 holder.bind(item, position, payloads);
                 break;
         }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isHeader(position)) {
+            return TYPE_HEADER;
+        } else if (isFooter(position)) {
+            return TYPE_FOOTER;
+        }
+
+        return getAdditionalItemViewType(position, calculateIndex(position, true));
     }
 
     public int getCollectionCount() {
@@ -84,13 +136,86 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
 
     private int calculateIndex(int index, boolean isViewBinding) {
         if (isViewBinding) {
+            index = index - (hasHeader() ? 1 : 0);
             if (index >= items.size()) {
                 throw new IllegalStateException("Index is defined in wrong range!");
             } else {
                 return index;
             }
         } else {
+            index = index + (hasHeader() ? 1 : 0);
             return index;
+        }
+    }
+
+    public boolean hasFooter() {
+        return footerView != null;
+    }
+
+    public boolean hasHeader() {
+        return headerView != null;
+    }
+
+    protected boolean isFooter(int position) {
+        return hasFooter() && position == getItemCount() - 1;
+    }
+
+    protected boolean isHeader(int position) {
+        return hasHeader() && position == 0;
+    }
+
+    public void setFooter(@LayoutRes int footerViewId) {
+        setFooter(LayoutInflater.from(context).inflate(footerViewId, (ViewGroup) ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content), false));
+    }
+
+    public void setFooter(View footerView) {
+        boolean hadFooterBefore = hasFooter();
+
+        int position = getCollectionCount() + (hasHeader() ? 1 : 0);
+        this.footerView = footerView;
+        setDefaultLayoutParams(this.footerView);
+
+        if (hadFooterBefore) {
+            notifyItemChanged(position);
+        } else {
+            notifyItemInserted(position);
+        }
+    }
+
+    public void setHeader(@LayoutRes int headerViewId) {
+        setHeader(LayoutInflater.from(context).inflate(headerViewId, (ViewGroup) ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content), false));
+    }
+
+    public void setHeader(View headerView) {
+        boolean hadHeaderBefore = hasHeader();
+
+        this.headerView = headerView;
+        setDefaultLayoutParams(this.headerView);
+
+        if (hadHeaderBefore) {
+            notifyItemChanged(0);
+        } else {
+            notifyItemInserted(0);
+        }
+    }
+
+    protected int getAdditionalItemViewType(int adapterPosition, int itemPosition) {
+        return TYPE_ITEM;
+    }
+
+    private void setDefaultLayoutParams(View view) {
+        if (getLayoutManager() != null && getLayoutManager() instanceof LinearLayoutManager) {
+            RecyclerView.LayoutParams layoutParams;
+
+            if (((LinearLayoutManager) getLayoutManager()).getOrientation() == LinearLayoutManager.VERTICAL) {
+                layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
+                        RecyclerView.LayoutParams.WRAP_CONTENT);
+                view.setLayoutParams(layoutParams);
+            } else {
+                layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
+                        RecyclerView.LayoutParams.MATCH_PARENT);
+                view.setLayoutParams(layoutParams);
+            }
         }
     }
 }

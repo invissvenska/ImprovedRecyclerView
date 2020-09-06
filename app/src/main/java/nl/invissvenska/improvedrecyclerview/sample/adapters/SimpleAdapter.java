@@ -21,9 +21,8 @@ public class SimpleAdapter extends ImprovedRecyclerAdapter<String> {
         super(context, Collections.<String>emptyList());
     }
 
-    @NonNull
     @Override
-    public ImprovedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    protected ImprovedViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         return new TestViewHolder(view);
     }

@@ -2,6 +2,8 @@ package nl.invissvenska.improvedrecyclerview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +23,13 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
     public static final int TYPE_FOOTER = 2;
     public static final int TYPE_ITEM = 3;
     protected OnClickListener<E> listener;
+    protected OnNextPageListener nextPageListener;
     private Context context;
     protected List<E> items;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    protected boolean isCancelled = false;
     protected boolean isLoading = false;
+    private int nextPageOffset = 1;
     private View footerView;
     private View headerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -97,6 +103,20 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
                 position = calculateIndex(position, true);
                 E item = items.get(position);
                 holder.bind(item, position, payloads);
+
+                if (nextPageListener != null && !isLoading && position >= getCollectionCount() - getNextPageOffset() && !isCancelled) {
+                    isLoading = true;
+
+                    // If RecyclerView is currently computing a layout, it's in a lockdown state and any
+                    // attempt to update adapter contents will result in an exception. In these cases, we need to postpone the change
+                    // using a Handler.
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            nextPageListener.onScrolledToNextPage();
+                        }
+                    });
+                }
                 break;
         }
     }
@@ -118,6 +138,22 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
 
     public interface OnClickListener<E> {
         void onClick(int index, E item);
+    }
+
+    public interface OnNextPageListener {
+        void onScrolledToNextPage();
+    }
+
+    public void setOnClickListener(OnClickListener<E> listener) {
+        this.listener = listener;
+    }
+
+    public void cancel() {
+        isCancelled = true;
+    }
+
+    public void reset() {
+        isCancelled = false;
     }
 
     public RecyclerView.LayoutManager getLayoutManager() {
@@ -162,6 +198,10 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
 
     protected boolean isHeader(int position) {
         return hasHeader() && position == 0;
+    }
+
+    public int getNextPageOffset() {
+        return nextPageOffset;
     }
 
     public void setFooter(@LayoutRes int footerViewId) {

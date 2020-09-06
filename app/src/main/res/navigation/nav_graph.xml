@@ -17,9 +17,9 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="nl.invissvenska.improvedrecyclerview.sample.SecondFragment"
+        android:name="nl.invissvenska.improvedrecyclerview.sample.SimpleFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        tools:layout="@layout/fragment_simple">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"

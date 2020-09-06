@@ -1,9 +1,11 @@
 package nl.invissvenska.improvedrecyclerview.sample;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,12 +18,12 @@ import java.util.List;
 import nl.invissvenska.improvedrecyclerview.ImprovedRecyclerView;
 import nl.invissvenska.improvedrecyclerview.sample.adapters.SimpleAdapter;
 
-public class SecondFragment extends Fragment {
+public class SimpleFragment extends Fragment implements SimpleAdapter.OnClickListener<String> {
 
     private static final List<String> ITEMS = Collections.unmodifiableList(Arrays.asList(
             "One",
             "Two",
-            "Three asdf asdfasd fasdfasdf asdfdasdf",
+            "Three",
             "Four",
             "Five",
             "Six",
@@ -47,7 +49,7 @@ public class SecondFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_second, container, false);
+        View view = inflater.inflate(R.layout.fragment_simple, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_view);
         emptyView = view.findViewById(R.id.empty_view);
@@ -67,11 +69,25 @@ public class SecondFragment extends Fragment {
         adapter.setFooter(R.layout.item_footer);
 
         recyclerView.setAdapter(adapter);
-        adapter.addAll(ITEMS);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isRemoving()) {
+                    adapter.addAll(ITEMS);
+                }
+            }
+        }, 3000);
+    }
+
+    @Override
+    public void onClick(int index, String item) {
+        Toast.makeText(this.getContext(), item, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        adapter.cancel();
     }
 }

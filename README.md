@@ -76,18 +76,8 @@ public class NextPageFragment extends Fragment implements SimpleAdapter.OnNextPa
 
     @Override
     public void onScrolledToNextPage() {
-        // Simulate network call by showing progressbar and adding data to adapter with some delay.
-        progressBar.setVisibility(View.VISIBLE);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!isRemoving()) {
-                    adapter.addAll(ITEMS);
-                    progressBar.setVisibility(View.INVISIBLE);
-                }
-            }
-        }, 3000);
+        // Fetch data and add it to the list, show some loading widget in UI to indicate loading
+        adapter.addAll(ITEMS);
     }
 }
 ```
@@ -95,6 +85,7 @@ public class NextPageFragment extends Fragment implements SimpleAdapter.OnNextPa
 ### Grid layout
 Just use a GridLayoutManager instead of a LinearLayoutManager. If you want to use header and footer in your layout you can use the `setSpanSizeLookup` method set the full with of the RecyclerView to the header and footer.  
 ```java
+...
 final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
 layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
     @Override
@@ -110,14 +101,13 @@ layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
     }
 });
 recyclerView.setLayoutManager(layoutManager);
-recyclerView.setEmptyView(emptyView);
 
 adapter = new SimpleAdapter(getContext());
 recyclerView.setAdapter(adapter);
-adapter.addAll(ITEMS);
 
 adapter.setHeader(R.layout.item_header);
 adapter.setFooter(R.layout.item_footer);
+...
 ```
 
 ## Screenshots

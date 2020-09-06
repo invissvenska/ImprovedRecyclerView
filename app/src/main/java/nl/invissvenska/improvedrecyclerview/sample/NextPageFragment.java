@@ -22,26 +22,26 @@ import nl.invissvenska.improvedrecyclerview.sample.adapters.SimpleAdapter;
 public class NextPageFragment extends Fragment implements SimpleAdapter.OnClickListener<String>, SimpleAdapter.OnNextPageListener {
 
     private static final List<String> ITEMS = Collections.unmodifiableList(Arrays.asList(
-            "One",
-            "Two",
-            "Three",
-            "Four",
-            "Five",
-            "Six",
-            "Seven",
-            "Eight",
-            "Nine",
-            "Ten",
-            "Eleven",
-            "Twelve",
-            "Thirteen",
-            "Fourteen",
-            "Fifteen",
-            "Sixteen",
-            "Seventeen",
-            "Eighteen",
-            "Nineteen",
-            "Twenty"
+            "Apple",
+            "Peach",
+            "Banana",
+            "Mango",
+            "Strawberry",
+            "Berry",
+            "Carrot",
+            "Basil",
+            "Apricot",
+            "Grape",
+            "Almond",
+            "Pear",
+            "Raspberry",
+            "Lemon",
+            "Orange",
+            "Sweet Pepper",
+            "Pumpkin",
+            "Olive",
+            "Blueberry",
+            "Parsley"
     ));
 
     private ImprovedRecyclerView recyclerView;

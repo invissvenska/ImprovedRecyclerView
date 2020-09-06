@@ -64,6 +64,7 @@ public class SimpleFragment extends Fragment implements SimpleAdapter.OnClickLis
         recyclerView.setEmptyView(emptyView);
 
         adapter = new SimpleAdapter(getContext());
+        adapter.setOnClickListener(this);
 
         adapter.setHeader(R.layout.item_header);
         adapter.setFooter(R.layout.item_footer);

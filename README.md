@@ -31,26 +31,26 @@ ImprovedRecyclerView provides methods to add header, footers, empty view and mor
 ### Header & Footer
 You can add optional header and footer to your list. These are optional so you don't have to set a header and/or footer.  
 ```java
-    adapter.setHeader(View view);
-    adapter.setFooter(View view);
+adapter.setHeader(View view);
+adapter.setFooter(View view);
 ```
   
 ### Empty view
 Empty view is supported. It will be shown automatically when the adapter is empty, and automatically hides when the adapter is populated.  
 ```java
-    recyclerView.setEmptyView(View view);
+recyclerView.setEmptyView(View view);
 ```  
   
 It is also possible to show the empty view while the adapter is not set. This is a handy when the adapter is initialized at a later point in time.  
 ```java
-    // show empty view when adapter is not set
-    recyclerView.setEmptyView(View view, true);
+// show empty view when adapter is not set
+recyclerView.setEmptyView(View view, true);
 ```
 
 ### onClick
 The onClick methods are already implemented for you by the library.  
   
-Implement the OnClickListener<E> in your Activity or Fragment and override the dd method.  
+Implement the `OnClickListener<E>` in your Activity or Fragment and override the `onClick` method.  
 ```java
 public class SimpleFragment extends Fragment implements SimpleAdapter.OnClickListener<String> {
 
@@ -66,7 +66,7 @@ public class SimpleFragment extends Fragment implements SimpleAdapter.OnClickLis
 ### Paging
 Paging can be used if you want to use less data in your app. Just add the initial set of items, and when you scroll down the next set of items will be added to the list.  
   
-Implement the OnNextPageListener in your Activity or Fragment and override the onScrolledToNextPage method.
+Implement the `OnNextPageListener` in your Activity or Fragment and override the `onScrolledToNextPage` method.
 ```java
 public class NextPageFragment extends Fragment implements SimpleAdapter.OnNextPageListener {
 

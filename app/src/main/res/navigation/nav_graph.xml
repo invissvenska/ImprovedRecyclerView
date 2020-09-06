@@ -3,26 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/OverviewFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="nl.invissvenska.improvedrecyclerview.sample.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/OverviewFragment"
+        android:name="nl.invissvenska.improvedrecyclerview.sample.OverviewFragment"
+        android:label="@string/overview_fragment_label"
+        tools:layout="@layout/fragment_overview">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            app:destination="@id/SimpleFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
+        android:id="@+id/SimpleFragment"
         android:name="nl.invissvenska.improvedrecyclerview.sample.SimpleFragment"
-        android:label="@string/second_fragment_label"
+        android:label="@string/simple_fragment_label"
         tools:layout="@layout/fragment_simple">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_SecondFragment_to_OverviewFragment"
+            app:destination="@id/OverviewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/NextPageFragment"
+        android:name="nl.invissvenska.improvedrecyclerview.sample.NextPageFragment"
+        android:label="@string/nextpage_fragment_label"
+        tools:layout="@layout/fragment_nextpage">
+
+        <action
+            android:id="@+id/action_NextPageFragment_to_OverviewFragment"
+            app:destination="@id/OverviewFragment" />
     </fragment>
 </navigation>

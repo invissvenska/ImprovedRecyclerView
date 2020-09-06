@@ -26,6 +26,8 @@ android {
 }
 
 dependencies {
+    //noinspection GradleDependency
     api "com.google.android.material:material:$androidXVersion"
+    //noinspection GradleDependency
     api "androidx.lifecycle:lifecycle-extensions:$androidXLifeCycleVersion"
 }

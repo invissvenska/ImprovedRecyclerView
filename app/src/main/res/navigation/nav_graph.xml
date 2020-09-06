@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_OverviewFragment_to_NextPageFragment"
             app:destination="@id/NextPageFragment" />
+        <action
+            android:id="@+id/action_OverviewFragment_to_EmptyViewFragment"
+            app:destination="@id/EmptyViewFragment" />
     </fragment>
     <fragment
         android:id="@+id/SimpleFragment"
@@ -33,6 +36,16 @@
         android:name="nl.invissvenska.improvedrecyclerview.sample.NextPageFragment"
         android:label="@string/nextpage_fragment_label"
         tools:layout="@layout/fragment_nextpage">
+
+        <action
+            android:id="@+id/action_NextPageFragment_to_OverviewFragment"
+            app:destination="@id/OverviewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/EmptyViewFragment"
+        android:name="nl.invissvenska.improvedrecyclerview.sample.EmptyViewFragment"
+        android:label="@string/emptyview_fragment_label"
+        tools:layout="@layout/fragment_emptyview">
 
         <action
             android:id="@+id/action_NextPageFragment_to_OverviewFragment"

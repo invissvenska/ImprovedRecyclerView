@@ -4,6 +4,7 @@
     <string name="overview_fragment_label">Overview Fragment</string>
     <string name="simple_fragment_label">Simple Fragment</string>
     <string name="nextpage_fragment_label">NextPage Fragment</string>
+    <string name="emptyview_fragment_label">EmptyView Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="hello_demo_fragment">Improved RecyclerView</string>

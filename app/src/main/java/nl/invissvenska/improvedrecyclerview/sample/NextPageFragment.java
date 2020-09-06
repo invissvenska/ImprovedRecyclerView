@@ -101,6 +101,4 @@ public class NextPageFragment extends Fragment implements SimpleAdapter.OnClickL
         super.onDestroy();
         adapter.cancel();
     }
-
-
 }

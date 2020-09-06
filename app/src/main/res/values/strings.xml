@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">ImprovedRecyclerview</string>
+    <string name="overview_fragment_label">Overview Fragment</string>
+    <string name="simple_fragment_label">Simple Fragment</string>
+    <string name="nextpage_fragment_label">NextPage Fragment</string>
+    <string name="emptyview_fragment_label">EmptyView Fragment</string>
+    <string name="grid_fragment_label">Grid Fragment</string>
+
+    <string name="empty_list">There are no items in collection.</string>
+    <string name="footer">Example footer</string>
+    <string name="header">Example header</string>
+</resources>

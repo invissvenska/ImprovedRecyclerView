@@ -101,6 +101,4 @@ public class ImprovedRecyclerView extends RecyclerView {
     public boolean isEmptyViewShown() {
         return emptyView != null && emptyView.getVisibility() == VISIBLE;
     }
-
-
 }

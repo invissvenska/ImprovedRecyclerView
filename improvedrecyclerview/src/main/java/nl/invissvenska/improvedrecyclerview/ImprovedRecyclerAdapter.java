@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -266,5 +267,16 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
                 view.setLayoutParams(layoutParams);
             }
         }
+    }
+
+    public void setParallaxHeader(final View header, final RecyclerView view) {
+        view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //TODO complete this for a parallax effect
+                Log.d("SCROLL", "" + view.computeVerticalScrollOffset());
+            }
+        });
     }
 }

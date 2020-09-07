@@ -31,6 +31,7 @@ public class SimpleAdapter extends ImprovedRecyclerAdapter<String> {
     public void onBindViewHolder(@NonNull ImprovedViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
     }
+
     public class TestViewHolder extends ImprovedViewHolder<String> {
         TextView tvPosition;
         TextView tvText;

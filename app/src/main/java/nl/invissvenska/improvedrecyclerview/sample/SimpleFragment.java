@@ -21,26 +21,26 @@ import nl.invissvenska.improvedrecyclerview.sample.adapters.SimpleAdapter;
 public class SimpleFragment extends Fragment implements SimpleAdapter.OnClickListener<String> {
 
     private static final List<String> ITEMS = Collections.unmodifiableList(Arrays.asList(
-            "One",
-            "Two",
-            "Three",
-            "Four",
-            "Five",
-            "Six",
-            "Seven",
-            "Eight",
-            "Nine",
-            "Ten",
-            "Eleven",
-            "Twelve",
-            "Thirteen",
-            "Fourteen",
-            "Fifteen",
-            "Sixteen",
-            "Seventeen",
-            "Eighteen",
-            "Nineteen",
-            "Twenty"
+            "Apple",
+            "Peach",
+            "Banana",
+            "Mango",
+            "Strawberry",
+            "Berry",
+            "Carrot",
+            "Basil",
+            "Apricot",
+            "Grape",
+            "Almond",
+            "Pear",
+            "Raspberry",
+            "Lemon",
+            "Orange",
+            "Sweet Pepper",
+            "Pumpkin",
+            "Olive",
+            "Blueberry",
+            "Parsley"
     ));
 
     private ImprovedRecyclerView recyclerView;
@@ -66,8 +66,9 @@ public class SimpleFragment extends Fragment implements SimpleAdapter.OnClickLis
         adapter = new SimpleAdapter(getContext());
         adapter.setOnClickListener(this);
 
-        adapter.setHeader(R.layout.item_header);
+//        adapter.setHeader(R.layout.item_header);
         adapter.setFooter(R.layout.item_footer);
+        adapter.setParallaxHeader(getLayoutInflater().inflate(R.layout.item_header, null), recyclerView);
 
         recyclerView.setAdapter(adapter);
         Handler handler = new Handler();

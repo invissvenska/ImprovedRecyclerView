@@ -66,9 +66,9 @@ public class SimpleFragment extends Fragment implements SimpleAdapter.OnClickLis
         adapter = new SimpleAdapter(getContext());
         adapter.setOnClickListener(this);
 
-//        adapter.setHeader(R.layout.item_header);
+        adapter.setHeader(R.layout.item_header);
         adapter.setFooter(R.layout.item_footer);
-        adapter.setParallaxHeader(getLayoutInflater().inflate(R.layout.item_header, null), recyclerView);
+//        adapter.setParallaxHeader(getLayoutInflater().inflate(R.layout.item_header, null), recyclerView);
 
         recyclerView.setAdapter(adapter);
         Handler handler = new Handler();

@@ -13,6 +13,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,14 +49,6 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
         this.items = new ArrayList<>(list);
     }
 
-    public boolean isLoading() {
-        return isLoading;
-    }
-
-    public void setLoading(boolean loading) {
-        isLoading = loading;
-    }
-
     @NonNull
     @Override
     public ImprovedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -69,30 +62,21 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
         }
     }
 
+    /**
+     * Override if you need a custom implementation.
+     */
     protected ImprovedViewHolder onCreateHeaderViewHolder() {
         return new ImprovedHeaderFooterViewHolder(headerView);
     }
 
+    /**
+     * Override if you need a custom implementation.
+     */
     protected ImprovedViewHolder onCreateFooterViewHolder() {
         return new ImprovedHeaderFooterViewHolder(footerView);
     }
 
     protected abstract ImprovedViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType);
-
-    @Override
-    public int getItemCount() {
-        int itemCount = items != null ? items.size() : 0;
-
-        if (hasFooter()) {
-            itemCount++;
-        }
-
-        if (hasHeader()) {
-            itemCount++;
-        }
-
-        return itemCount;
-    }
 
     @Override
     public void onBindViewHolder(@NonNull ImprovedViewHolder holder, int position) {
@@ -105,7 +89,6 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
         switch (getItemViewType(position)) {
             case TYPE_HEADER:
             case TYPE_FOOTER:
-                //Nothing, for now.
                 break;
             default:
                 position = calculateIndex(position, true);
@@ -129,6 +112,30 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
         }
     }
 
+    /**
+     * Item count is calculated as sum of items, headers and footers size.
+     *
+     * @return Adapter item count.
+     */
+    @Override
+    public int getItemCount() {
+        int itemCount = items != null ? items.size() : 0;
+
+        if (hasFooter()) {
+            itemCount++;
+        }
+
+        if (hasHeader()) {
+            itemCount++;
+        }
+
+        return itemCount;
+    }
+
+    /**
+     * @param position current adapter position
+     * @return item view type base od {@param position}
+     */
     @Override
     public int getItemViewType(int position) {
         if (isHeader(position)) {
@@ -140,16 +147,22 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
         return getAdditionalItemViewType(position, calculateIndex(position, true));
     }
 
+    /**
+     * Override this method if you are using custom ItemViewType and provide correct implementation.
+     *
+     * @param adapterPosition current adapter position
+     * @param itemPosition    current item positions, which is different from {@param adapterPosition} if adapter has header view.
+     * @return item view type.
+     */
+    protected int getAdditionalItemViewType(int adapterPosition, int itemPosition) {
+        return TYPE_ITEM;
+    }
+
+    /**
+     * Returns items size. In case if there are no headers or footers, the result will be the same as for getItemCount() method.
+     */
     public int getCollectionCount() {
         return items.size();
-    }
-
-    public interface OnClickListener<E> {
-        void onClick(int index, E item);
-    }
-
-    public interface OnNextPageListener {
-        void onScrolledToNextPage();
     }
 
     public void setOnClickListener(OnClickListener<E> listener) {
@@ -165,26 +178,98 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
         this.nextPageListener = nextPageListener;
     }
 
+    public Context getContext() {
+        return context;
+    }
+
+    /**
+     * Sets the isCancelled flag to true, which will cancel DiffUtil.DiffResult update dispatch to the adapter. Call this method when
+     * your activity or fragment is about to be destroyed.
+     */
     public void cancel() {
         isCancelled = true;
     }
 
+    /**
+     * Sets the isCancelled flag to false, which will enable DiffUtil.DiffResult update dispatch to the adapter.
+     */
     public void reset() {
         isCancelled = false;
     }
 
-    public RecyclerView.LayoutManager getLayoutManager() {
-        return layoutManager;
+    public boolean isLoading() {
+        return isLoading;
     }
 
-    public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
-        this.layoutManager = layoutManager;
+    public void setLoading(boolean loading) {
+        isLoading = loading;
+    }
+
+    public void add(E item) {
+        int position = items.size();
+        items.add(item);
+        notifyItemInserted(calculateIndex(position, false));
     }
 
     public void addAll(Collection<E> collection) {
         int position = items.size();
         items.addAll(collection);
         notifyItemRangeInserted(calculateIndex(position, false), collection.size());
+    }
+
+    public void add(E item, int index) {
+        if (index > items.size()) {
+            throw new IllegalStateException("Index is defined in wrong range!");
+        } else {
+            items.add(index, item);
+            notifyItemInserted(calculateIndex(index, false));
+        }
+    }
+
+    public void addAll(@NonNull Collection<E> collection, int index) {
+        if (index >= items.size()) {
+            throw new IllegalStateException("Index is defined in wrong range!");
+        } else {
+            items.addAll(index, collection);
+            notifyItemRangeInserted(calculateIndex(index, false), collection.size());
+        }
+    }
+
+    public void remove(@NonNull E item) {
+        int position = items.indexOf(item);
+        if (items.remove(item)) {
+            notifyItemRemoved(calculateIndex(position, false));
+        }
+    }
+
+    public void removeAll(@NonNull Collection<E> collection) {
+        if (items.removeAll(collection)) {
+            notifyDataSetChanged();
+        }
+    }
+
+    public void remove(int index) {
+        if (index >= items.size()) {
+            throw new IllegalStateException("Index is defined in wrong range!");
+        } else if (items.remove(index) != null) {
+            notifyItemRemoved(calculateIndex(index, false));
+        }
+    }
+
+    public E get(int index) {
+        if (index >= items.size()) {
+            throw new IllegalStateException("Index is defined in wrong range!");
+        }
+        return items.get(index);
+    }
+
+    public Collection<E> getAll() {
+        return new ArrayList<>(items);
+    }
+
+    public void set(E item, int index) {
+        items.set(index, item);
+        notifyItemChanged(calculateIndex(index, false));
     }
 
     /**
@@ -213,6 +298,232 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
             items.addAll(newItems);
             notifyDataSetChanged();
         }
+    }
+
+    /**
+     * Calculate the correct item index because RecyclerView doesn't distinguish
+     * between header rows and item rows.
+     * <p>
+     * We have 2 possible cases, which are defined with {@param isViewBinding} value:
+     * <p>
+     * 1. If we are trying to bind the view, than the index value has to be decremented by 1 if adapter contains header
+     * view.
+     * <p>
+     * 2. If we are trying to perform some action on the adapter, that the index value has to be incremented by 1
+     * if adapter contains header view.
+     *
+     * @param index         RecyclerView row index.
+     * @param isViewBinding boolean value, which indicates whether we are trying to bind the view or perform some action on adapter.
+     * @return correct item index.
+     */
+    private int calculateIndex(int index, boolean isViewBinding) {
+        if (isViewBinding) {
+            index = index - (hasHeader() ? 1 : 0);
+            if (index >= items.size()) {
+                throw new IllegalStateException("Index is defined in wrong range!");
+            } else {
+                return index;
+            }
+        } else {
+            index = index + (hasHeader() ? 1 : 0);
+            return index;
+        }
+    }
+
+    /**
+     * Add a header view to this adapter. If header already exists, it will be replaced.
+     * <p>
+     * Note: setHeader should be called only after {@link ImprovedRecyclerView#setAdapter(RecyclerView.Adapter)} otherwise the default
+     * layout params wont apply to this view. For more info about the default layout params check {@link #setDefaultLayoutParams(View)}
+     * documentation.
+     *
+     * @param headerViewId layout view id.
+     */
+    public void setHeader(@LayoutRes int headerViewId) {
+        setHeader(LayoutInflater.from(context).inflate(headerViewId, (ViewGroup) ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content), false));
+    }
+
+    /**
+     * Add a header view to this adapter. If layout params for the {@param headerView}} are missing, default layout params will be set with
+     * the {@link #setDefaultLayoutParams(View)} method.
+     * <p>
+     * Note: setHeader should be called only after {@link ImprovedRecyclerView#setAdapter(RecyclerView.Adapter)} otherwise the default
+     * layout params wont apply to this view. For more info about the default layout params check {@link #setDefaultLayoutParams(View)}
+     * documentation.
+     *
+     * @param headerView layout view
+     */
+    public void setHeader(View headerView) {
+        boolean hadHeaderBefore = hasHeader();
+
+        this.headerView = headerView;
+        setDefaultLayoutParams(this.headerView);
+
+        if (hadHeaderBefore) {
+            notifyItemChanged(0);
+        } else {
+            notifyItemInserted(0);
+        }
+    }
+
+    /**
+     * Add a footer view to this adapter. If footer already exists, it will be replaced.
+     * * <p>
+     * Note: setFooter should be called only after {@link ImprovedRecyclerView#setAdapter(RecyclerView.Adapter)} otherwise the default
+     * layout params wont apply to this view. For more info about the default layout params check {@link #setDefaultLayoutParams(View)}
+     * documentation.
+     *
+     * @param footerViewId layout view id.
+     */
+    public void setFooter(@LayoutRes int footerViewId) {
+        setFooter(LayoutInflater.from(context).inflate(footerViewId, (ViewGroup) ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content), false));
+    }
+
+    /**
+     * Add a footer view to this adapter. If layout params for the {@param footerView}} are missing, default layout params will be set with
+     * the {@link #setDefaultLayoutParams(View)} method.
+     * If footer already exists, it will be replaced.
+     * <p>
+     * Note: setFooter should be called only after {@link ImprovedRecyclerView#setAdapter(RecyclerView.Adapter)} otherwise the default
+     * layout params wont apply to this view. For more info about the default layout params check {@link #setDefaultLayoutParams(View)}
+     * documentation.
+     *
+     * @param footerView layout view
+     * @return true if footer was added/replaced, false otherwise.
+     */
+    public void setFooter(View footerView) {
+        boolean hadFooterBefore = hasFooter();
+
+        int position = getCollectionCount() + (hasHeader() ? 1 : 0);
+        this.footerView = footerView;
+        setDefaultLayoutParams(this.footerView);
+
+        if (hadFooterBefore) {
+            notifyItemChanged(position);
+        } else {
+            notifyItemInserted(position);
+        }
+    }
+
+    /**
+     * Sets the default layout params to the provided {@param view} if they are not yet set. Default params are MATCH_PARENT for layout
+     * width and WRAP_CONTENT for layout height.
+     *
+     * @param view View for which we want to set default layout params.
+     */
+    private void setDefaultLayoutParams(View view) {
+        if (getLayoutManager() != null && getLayoutManager() instanceof LinearLayoutManager) {
+            RecyclerView.LayoutParams layoutParams;
+
+            if (((LinearLayoutManager) getLayoutManager()).getOrientation() == LinearLayoutManager.VERTICAL) {
+                layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
+                        RecyclerView.LayoutParams.WRAP_CONTENT);
+                view.setLayoutParams(layoutParams);
+            } else {
+                layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
+                        RecyclerView.LayoutParams.MATCH_PARENT);
+                view.setLayoutParams(layoutParams);
+            }
+        }
+    }
+
+    /**
+     * Removes header view from the RecyclerView (if existing).
+     */
+    public void removeHeader() {
+        if (hasHeader()) {
+            headerView = null;
+            notifyItemRemoved(0);
+        }
+    }
+
+    /**
+     * Removes footer view from the RecyclerView (if existing).
+     */
+    public void removeFooter() {
+        if (hasFooter()) {
+            footerView = null;
+
+            int position = getCollectionCount() + (hasHeader() ? 1 : 0);
+            notifyItemRemoved(position);
+        }
+    }
+
+    /**
+     * @return true if {@param headerView} is not null, false otherwise
+     */
+    public boolean hasHeader() {
+        return headerView != null;
+    }
+
+    /**
+     * @return true if {@param footerView} is not null, false otherwise
+     */
+    public boolean hasFooter() {
+        return footerView != null;
+    }
+
+    /**
+     * @return true if item at {@param postion} is header
+     */
+    protected boolean isHeader(int position) {
+        return hasHeader() && position == 0;
+    }
+
+    /**
+     * @return true if item at {@param postion} is footer
+     */
+    protected boolean isFooter(int position) {
+        return hasFooter() && position == getItemCount() - 1;
+    }
+
+    public View getFooterView() {
+        return footerView;
+    }
+
+    public View getHeaderView() {
+        return headerView;
+    }
+
+    public int getNextPageOffset() {
+        return nextPageOffset;
+    }
+
+    public void setNextPageOffset(int nextPageOffset) {
+        this.nextPageOffset = nextPageOffset;
+    }
+
+    public RecyclerView.LayoutManager getLayoutManager() {
+        return layoutManager;
+    }
+
+    public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
+        this.layoutManager = layoutManager;
+
+        // if layout manager is GridLayoutManager, we have to attach span size lookup in order to correctly setup header and footer view
+        if (layoutManager instanceof GridLayoutManager) {
+            setHeaderFooterViewsForGridLayoutManager((GridLayoutManager) layoutManager);
+        }
+    }
+
+    /**
+     * If adapter is using GridLayoutManager, we have to register custom SpanSizeLookup listener and manipulate with span size - if current
+     * item is either header or footer, we return {@param layoutManager} span count as span size in order to position header or footer view
+     * in it's own column.
+     *
+     * @param layoutManager GridLayoutManager for which we attach SpanSizeLookup listener.
+     */
+    private void setHeaderFooterViewsForGridLayoutManager(final GridLayoutManager layoutManager) {
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (isHeader(position) || isFooter(position)) {
+                    return layoutManager.getSpanCount();
+                } else {
+                    return 1;
+                }
+            }
+        });
     }
 
     /**
@@ -257,95 +568,15 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
         }
     }
 
-    private int calculateIndex(int index, boolean isViewBinding) {
-        if (isViewBinding) {
-            index = index - (hasHeader() ? 1 : 0);
-            if (index >= items.size()) {
-                throw new IllegalStateException("Index is defined in wrong range!");
-            } else {
-                return index;
-            }
-        } else {
-            index = index + (hasHeader() ? 1 : 0);
-            return index;
-        }
+    public interface OnClickListener<E> {
+        void onClick(int index, E item);
     }
 
-    public boolean hasFooter() {
-        return footerView != null;
+    public interface OnNextPageListener {
+        void onScrolledToNextPage();
     }
 
-    public boolean hasHeader() {
-        return headerView != null;
-    }
-
-    protected boolean isFooter(int position) {
-        return hasFooter() && position == getItemCount() - 1;
-    }
-
-    protected boolean isHeader(int position) {
-        return hasHeader() && position == 0;
-    }
-
-    public int getNextPageOffset() {
-        return nextPageOffset;
-    }
-
-    public void setFooter(@LayoutRes int footerViewId) {
-        setFooter(LayoutInflater.from(context).inflate(footerViewId, (ViewGroup) ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content), false));
-    }
-
-    public void setFooter(View footerView) {
-        boolean hadFooterBefore = hasFooter();
-
-        int position = getCollectionCount() + (hasHeader() ? 1 : 0);
-        this.footerView = footerView;
-        setDefaultLayoutParams(this.footerView);
-
-        if (hadFooterBefore) {
-            notifyItemChanged(position);
-        } else {
-            notifyItemInserted(position);
-        }
-    }
-
-    public void setHeader(@LayoutRes int headerViewId) {
-        setHeader(LayoutInflater.from(context).inflate(headerViewId, (ViewGroup) ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content), false));
-    }
-
-    public void setHeader(View headerView) {
-        boolean hadHeaderBefore = hasHeader();
-
-        this.headerView = headerView;
-        setDefaultLayoutParams(this.headerView);
-
-        if (hadHeaderBefore) {
-            notifyItemChanged(0);
-        } else {
-            notifyItemInserted(0);
-        }
-    }
-
-    protected int getAdditionalItemViewType(int adapterPosition, int itemPosition) {
-        return TYPE_ITEM;
-    }
-
-    private void setDefaultLayoutParams(View view) {
-        if (getLayoutManager() != null && getLayoutManager() instanceof LinearLayoutManager) {
-            RecyclerView.LayoutParams layoutParams;
-
-            if (((LinearLayoutManager) getLayoutManager()).getOrientation() == LinearLayoutManager.VERTICAL) {
-                layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
-                        RecyclerView.LayoutParams.WRAP_CONTENT);
-                view.setLayoutParams(layoutParams);
-            } else {
-                layoutParams = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT,
-                        RecyclerView.LayoutParams.MATCH_PARENT);
-                view.setLayoutParams(layoutParams);
-            }
-        }
-    }
-
+    //TODO complete implementation
     public void setParallaxHeader(final View header, final RecyclerView view) {
         view.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

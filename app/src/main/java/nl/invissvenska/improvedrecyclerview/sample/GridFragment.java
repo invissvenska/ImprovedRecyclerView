@@ -69,21 +69,7 @@ public class GridFragment extends Fragment implements SimpleAdapter.OnClickListe
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                switch(adapter.getItemViewType(position)) {
-                    case SimpleAdapter.TYPE_HEADER:
-                    case SimpleAdapter.TYPE_FOOTER:
-                        return layoutManager.getSpanCount();
-                    case SimpleAdapter.TYPE_ITEM:
-                    default:
-                        return 1;
-                }
-            }
-        });
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setEmptyView(emptyView);
 
         adapter = new SimpleAdapter(getContext());

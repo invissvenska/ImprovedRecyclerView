@@ -17,6 +17,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/button_parallax"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/parallax_fragment_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_simple" />
+
+    <Button
         android:id="@+id/button_nextpage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,7 +34,7 @@
         android:text="@string/nextpage_fragment_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_simple" />
+        app:layout_constraintTop_toBottomOf="@id/button_parallax" />
 
     <Button
         android:id="@+id/button_emptyview"

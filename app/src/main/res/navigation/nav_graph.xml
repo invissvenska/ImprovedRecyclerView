@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_OverviewFragment_to_UpdateFragment"
             app:destination="@id/UpdateFragment" />
+        <action
+            android:id="@+id/action_OverviewFragment_to_ParallaxFragment"
+            app:destination="@id/ParallaxFragment" />
     </fragment>
     <fragment
         android:id="@+id/SimpleFragment"
@@ -75,6 +78,16 @@
 
         <action
             android:id="@+id/action_UpdateFragment_to_OverviewFragment"
+            app:destination="@id/OverviewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ParallaxFragment"
+        android:name="nl.invissvenska.improvedrecyclerview.sample.ParallaxFragment"
+        android:label="@string/parallax_fragment_label"
+        tools:layout="@layout/fragment_parallax">
+
+        <action
+            android:id="@+id/action_ParallaxFragment_to_OverviewFragment"
             app:destination="@id/OverviewFragment" />
     </fragment>
 </navigation>

@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -27,6 +29,21 @@ public class UpdateAdapter extends ImprovedRecyclerAdapter<Item> {
     protected ImprovedViewHolder<Item> onCreateItemViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         return new TestViewHolder(view);
+    }
+
+    @Override
+    public void onItemBigResize(RecyclerView.ViewHolder viewHolder, int position, int dyAbs) {
+
+    }
+
+    @Override
+    public void onItemSmallResize(RecyclerView.ViewHolder viewHolder, int position, int dyAbs) {
+
+    }
+
+    @Override
+    public void onItemInit(RecyclerView.ViewHolder viewHolder) {
+
     }
 
     public class TestViewHolder extends ImprovedViewHolder<Item> {

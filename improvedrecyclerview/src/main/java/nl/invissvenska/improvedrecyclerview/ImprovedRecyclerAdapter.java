@@ -42,11 +42,18 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
     private int nextPageOffset = 1;
     private View footerView;
     private View headerView;
+    private int height;
     private RecyclerView.LayoutManager layoutManager;
 
     public ImprovedRecyclerAdapter(Context context, Collection<E> list) {
         this.context = context;
         this.items = new ArrayList<>(list);
+    }
+
+    public ImprovedRecyclerAdapter(Context context, Collection<E> list, int height) {
+        this.context = context;
+        this.items = new ArrayList<>(list);
+        this.height = height;
     }
 
     @NonNull
@@ -485,6 +492,20 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
         return headerView;
     }
 
+    /**
+     * Gets the height for the parallax header
+     * @return
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    public abstract void onItemInit(RecyclerView.ViewHolder viewHolder);
+
+    public abstract void onItemBigResize(RecyclerView.ViewHolder viewHolder, int position, int dyAbs);
+
+    public abstract void onItemSmallResize(RecyclerView.ViewHolder viewHolder, int position, int dyAbs);
+
     public int getNextPageOffset() {
         return nextPageOffset;
     }
@@ -574,17 +595,5 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
 
     public interface OnNextPageListener {
         void onScrolledToNextPage();
-    }
-
-    //TODO complete implementation
-    public void setParallaxHeader(final View header, final RecyclerView view) {
-        view.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                //TODO complete this for a parallax effect
-                Log.d("SCROLL", "" + view.computeVerticalScrollOffset());
-            }
-        });
     }
 }

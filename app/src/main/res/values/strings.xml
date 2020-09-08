@@ -6,6 +6,7 @@
     <string name="emptyview_fragment_label">EmptyView Fragment</string>
     <string name="grid_fragment_label">Grid Fragment</string>
     <string name="update_fragment_label">Update Fragment</string>
+    <string name="parallax_fragment_label">Parallax Fragment</string>
 
     <string name="empty_list">There are no items in collection.</string>
     <string name="footer">Example footer</string>

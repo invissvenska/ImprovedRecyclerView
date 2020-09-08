@@ -1,7 +1,7 @@
 # ImprovedRecyclerView
 [![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=16) [![](https://jitpack.io/v/invissvenska/ImprovedRecyclerView.svg)](https://jitpack.io/#invissvenska/ImprovedRecyclerView) <span class="badge-buymeacoffee"><a href="https://www.paypal.com/paypalme/svenvandentweel/3" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>  
 
-Based on the deprecated [infinum MjolnirRecyclerView](https://github.com/infinum/MjolnirRecyclerView) library, but using AndroidX and more options: TBD.
+Based on the deprecated [infinum MjolnirRecyclerView](https://github.com/infinum/MjolnirRecyclerView) library, updated by using AndroidX and added more options: Parallax header and more is coming.
 
 ## Prerequisites
 
@@ -160,6 +160,23 @@ protected void bind(final Item item, final int position, List<Object> payloads) 
 In your Fragment or Activity call the `update` method in you Adapter to update only the different items:
 ```java
 adapter.update(newList, new ItemsDiffUtil(items, newList));
+```
+
+### Parallax header
+When you want to feel more depth in you app you can use the parallax option for the header.  
+
+Add the height of your header layout to your adapter, and add the `ImprovedHeaderScrollListener` to your RecyclerView.
+```java
+LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+recyclerView.setLayoutManager(layoutManager);
+recyclerView.setEmptyView(emptyView);
+
+adapter = new SimpleAdapter(getContext(), (int) getResources().getDimension(R.dimen.parallax_height));
+adapter.setHeader(R.layout.item_header);
+
+recyclerView.setAdapter(adapter);
+recyclerView.addOnScrollListener(new ResizeScrollListener<>(adapter, layoutManager));
+adapter.addAll(ITEMS);
 ```
 
 ## Screenshots

@@ -1,0 +1,3 @@
+<resources>
+    <dimen name="parallax_height">200dp</dimen>
+</resources>

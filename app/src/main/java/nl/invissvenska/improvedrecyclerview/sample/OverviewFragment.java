@@ -13,7 +13,6 @@ public class OverviewFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_overview, container, false);
     }
 
@@ -49,6 +48,14 @@ public class OverviewFragment extends Fragment {
             public void onClick(View view) {
                 NavHostFragment.findNavController(OverviewFragment.this)
                         .navigate(R.id.action_OverviewFragment_to_GridFragment);
+            }
+        });
+
+        view.findViewById(R.id.button_update).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavHostFragment.findNavController(OverviewFragment.this)
+                        .navigate(R.id.action_OverviewFragment_to_UpdateFragment);
             }
         });
     }

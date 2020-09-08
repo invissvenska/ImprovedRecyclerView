@@ -20,36 +20,36 @@ import nl.invissvenska.improvedrecyclerview.sample.adapters.SimpleAdapter;
 public class GridFragment extends Fragment implements SimpleAdapter.OnClickListener<String> {
 
     private static final List<String> ITEMS = Collections.unmodifiableList(Arrays.asList(
-            "One",
-            "Two",
-            "Three",
-            "Four",
-            "Five",
-            "Six",
-            "Seven",
-            "Eight",
-            "Nine",
-            "Ten",
-            "Eleven",
-            "Twelve",
-            "Thirteen",
-            "Fourteen",
-            "Fifteen",
-            "Sixteen",
-            "Seventeen",
-            "Eighteen",
-            "Nineteen",
-            "Twenty",
-            "Twenty one",
-            "Twenty two",
-            "Twenty three",
-            "Twenty four",
-            "Twenty five",
-            "Twenty six",
-            "Twenty seven",
-            "Twenty eight",
-            "Twenty nine",
-            "Thirty"
+            "Apple",
+            "Peach",
+            "Banana",
+            "Mango",
+            "Strawberry",
+            "Berry",
+            "Carrot",
+            "Basil",
+            "Apricot",
+            "Grape",
+            "Almond",
+            "Pear",
+            "Raspberry",
+            "Lemon",
+            "Orange",
+            "Sweet Pepper",
+            "Pumpkin",
+            "Olive",
+            "Blueberry",
+            "Parsley",
+            "Cherry",
+            "Green Peas",
+            "Pineapple",
+            "Bean",
+            "Tomato",
+            "Gherkin",
+            "Onion",
+            "Nut",
+            "Cucumber",
+            "Lettuce"
     ));
 
     private ImprovedRecyclerView recyclerView;
@@ -69,21 +69,7 @@ public class GridFragment extends Fragment implements SimpleAdapter.OnClickListe
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                switch(adapter.getItemViewType(position)) {
-                    case SimpleAdapter.TYPE_HEADER:
-                    case SimpleAdapter.TYPE_FOOTER:
-                        return layoutManager.getSpanCount();
-                    case SimpleAdapter.TYPE_ITEM:
-                    default:
-                        return 1;
-                }
-            }
-        });
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setEmptyView(emptyView);
 
         adapter = new SimpleAdapter(getContext());

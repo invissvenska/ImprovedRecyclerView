@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_OverviewFragment_to_GridFragment"
             app:destination="@id/GridFragment" />
+        <action
+            android:id="@+id/action_OverviewFragment_to_UpdateFragment"
+            app:destination="@id/UpdateFragment" />
     </fragment>
     <fragment
         android:id="@+id/SimpleFragment"
@@ -62,6 +65,16 @@
 
         <action
             android:id="@+id/action_GridFragment_to_OverviewFragment"
+            app:destination="@id/OverviewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/UpdateFragment"
+        android:name="nl.invissvenska.improvedrecyclerview.sample.UpdateFragment"
+        android:label="@string/update_fragment_label"
+        tools:layout="@layout/fragment_update">
+
+        <action
+            android:id="@+id/action_UpdateFragment_to_OverviewFragment"
             app:destination="@id/OverviewFragment" />
     </fragment>
 </navigation>

@@ -83,24 +83,10 @@ public class NextPageFragment extends Fragment implements SimpleAdapter.OnNextPa
 ```
 
 ### Grid layout
-Just use a GridLayoutManager instead of a LinearLayoutManager. If you want to use header and footer in your layout you can use the `setSpanSizeLookup` method set the full with of the RecyclerView to the header and footer.  
+Just use a GridLayoutManager instead of a LinearLayoutManager. Size of header and footer will be automatically spanned across the grid spansize. 
 ```java
 ...
-final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
-layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-    @Override
-    public int getSpanSize(int position) {
-        switch(adapter.getItemViewType(position)) {
-            case SimpleAdapter.TYPE_HEADER:
-            case SimpleAdapter.TYPE_FOOTER:
-                return layoutManager.getSpanCount();
-            case SimpleAdapter.TYPE_ITEM:
-            default:
-                return 1;
-        }
-    }
-});
-recyclerView.setLayoutManager(layoutManager);
+recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
 adapter = new SimpleAdapter(getContext());
 recyclerView.setAdapter(adapter);
@@ -108,6 +94,72 @@ recyclerView.setAdapter(adapter);
 adapter.setHeader(R.layout.item_header);
 adapter.setFooter(R.layout.item_footer);
 ...
+```
+
+### DiffUtil
+Only updates the different values in the RecyclerView and let the same values intact when giving a new list of items.  
+
+Extend the `DiffUtil.Callback` class and update the `getChangePayload` method according your needs. In this example only a string value is added to the Bundle.
+```java
+public class ItemsDiffUtil extends DiffUtil.Callback {
+    public static final String EXTRA_ITEM_DESCRIPTION = "EXTRA_ITEM_DESCRIPTION";
+
+    private List<Item> oldList;
+    private List<Item> newList;
+
+    public ItemsDiffUtil(List<E> oldList, List<E> newList) {
+        this.oldList = oldList;
+        this.newList = newList;
+    }
+
+    @Nullable
+    @Override
+    public Object getChangePayload(int oldItemPosition, int newItemPosition) {
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_ITEM_DESCRIPTION, newList.get(newItemPosition).getName());
+        return bundle;
+    }
+
+    @Override
+    public int getOldListSize() {
+        return oldList.size();
+    }
+
+    @Override
+    public int getNewListSize() {
+        return newList.size();
+    }
+
+    @Override
+    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+        return oldList.get(oldItemPosition).getId() == newList.get(newItemPosition).getId();
+    }
+
+    @Override
+    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+        return oldList.get(oldItemPosition).getName().equals(newList.get(newItemPosition).getName());
+    }
+}
+``` 
+  
+In your Adapter add the following lines to in the `onBind` method to update only fill the updated items.
+```java
+@Override
+protected void bind(final Item item, final int position, List<Object> payloads) {
+    if (payloads.isEmpty()) {
+        tvPosition.setText(String.valueOf(item.getId()));
+        tvText.setText(item.getName());
+    } else {
+        Bundle bundle = (Bundle) payloads.get(0);
+        tvText.setText(bundle.getString(ItemsDiffUtil.EXTRA_ITEM_DESCRIPTION));
+    }
+    ...
+}
+```
+
+In your Fragment or Activity call the `update` method in you Adapter to update only the different items:
+```java
+adapter.update(newList, new ItemsDiffUtil(items, newList));
 ```
 
 ## Screenshots

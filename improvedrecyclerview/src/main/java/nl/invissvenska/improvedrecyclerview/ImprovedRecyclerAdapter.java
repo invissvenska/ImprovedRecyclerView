@@ -11,13 +11,19 @@ import android.view.ViewGroup;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<ImprovedViewHolder> {
     public static final int TYPE_HEADER = 1;
@@ -30,11 +36,12 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
     private Handler handler = new Handler(Looper.getMainLooper());
     protected boolean isCancelled = false;
     protected boolean isLoading = false;
+    protected Queue<Collection<E>> pendingUpdates = new ArrayDeque<>();
+    private ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     private int nextPageOffset = 1;
     private View footerView;
     private View headerView;
     private RecyclerView.LayoutManager layoutManager;
-
 
     public ImprovedRecyclerAdapter(Context context, Collection<E> list) {
         this.context = context;
@@ -178,6 +185,76 @@ public abstract class ImprovedRecyclerAdapter<E> extends RecyclerView.Adapter<Im
         int position = items.size();
         items.addAll(collection);
         notifyItemRangeInserted(calculateIndex(position, false), collection.size());
+    }
+
+    /**
+     * Clears current items.
+     */
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Update the current adapter state. If {@param callback} is provided, an updated data set is calculated with DiffUtil, otherwise
+     * current data set is clear and {@param newItems} are added to the internal items collection.
+     *
+     * @param newItems Collection of new items, which are added to adapter.
+     * @param callback DiffUtil callback, which is used to update the items.
+     */
+    public void update(Collection<E> newItems, @Nullable DiffUtil.Callback callback) {
+        if (callback != null) {
+            pendingUpdates.add(newItems);
+            if (pendingUpdates.size() == 1) {
+                updateData(newItems, callback);
+            }
+        } else {
+            items.clear();
+            items.addAll(newItems);
+            notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * Calculates provided {@param callback} DiffResult by using DiffUtils.
+     *
+     * @param newItems Collection of new items, with which our current items collection is updated.
+     * @param callback DiffUtil.Callback on which DiffResult is calculated.
+     */
+    private void updateData(final Collection<E> newItems, final DiffUtil.Callback callback) {
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(callback);
+                postDiffResults(newItems, diffResult, callback);
+            }
+        });
+    }
+
+    /**
+     * Dispatched {@param diffResult} DiffResults to the adapter if adapter has not been cancelled. If there are any queued pending updates,
+     * it will peek the latest new items collection and once again update the adapter content.
+     *
+     * @param newItems   Collection of new items, with which our current items collection is updated.
+     * @param diffResult DiffUtil.DiffResult which was calculated for {@param callback}.
+     * @param callback   DiffUtil.Callback on which DiffResult was calculated.
+     */
+    private void postDiffResults(final Collection<E> newItems, final DiffUtil.DiffResult diffResult, final DiffUtil.Callback callback) {
+        if (!isCancelled) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    pendingUpdates.remove();
+                    diffResult.dispatchUpdatesTo(ImprovedRecyclerAdapter.this);
+                    items.clear();
+                    items.addAll(newItems);
+
+                    if (pendingUpdates.size() > 0) {
+                        updateData(pendingUpdates.peek(), callback);
+                    }
+                }
+            });
+        }
     }
 
     private int calculateIndex(int index, boolean isViewBinding) {

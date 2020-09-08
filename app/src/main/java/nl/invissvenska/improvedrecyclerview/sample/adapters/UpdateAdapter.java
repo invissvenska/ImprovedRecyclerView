@@ -1,12 +1,12 @@
 package nl.invissvenska.improvedrecyclerview.sample.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,25 +14,23 @@ import java.util.List;
 import nl.invissvenska.improvedrecyclerview.ImprovedRecyclerAdapter;
 import nl.invissvenska.improvedrecyclerview.ImprovedViewHolder;
 import nl.invissvenska.improvedrecyclerview.sample.R;
+import nl.invissvenska.improvedrecyclerview.sample.diffutils.ItemsDiffUtil;
+import nl.invissvenska.improvedrecyclerview.sample.models.Item;
 
-public class SimpleAdapter extends ImprovedRecyclerAdapter<String> {
+public class UpdateAdapter extends ImprovedRecyclerAdapter<Item> {
 
-    public SimpleAdapter(Context context) {
-        super(context, Collections.<String>emptyList());
+    public UpdateAdapter(Context context) {
+        super(context, Collections.<Item>emptyList());
     }
 
     @Override
-    protected ImprovedViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
+    protected ImprovedViewHolder<Item> onCreateItemViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         return new TestViewHolder(view);
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ImprovedViewHolder holder, int position) {
-        super.onBindViewHolder(holder, position);
-    }
+    public class TestViewHolder extends ImprovedViewHolder<Item> {
 
-    public class TestViewHolder extends ImprovedViewHolder<String> {
         private TextView tvPosition;
         private TextView tvText;
         private View rootView;
@@ -46,9 +44,15 @@ public class SimpleAdapter extends ImprovedRecyclerAdapter<String> {
         }
 
         @Override
-        protected void bind(final String item, final int position, List<Object> payloads) {
-            tvPosition.setText(String.valueOf(position));
-            tvText.setText(item);
+        protected void bind(final Item item, final int position, List<Object> payloads) {
+            if (payloads.isEmpty()) {
+                tvPosition.setText(String.valueOf(item.getId()));
+                tvText.setText(item.getName());
+            } else {
+                // only the different items will be updated
+                Bundle bundle = (Bundle) payloads.get(0);
+                tvText.setText(bundle.getString(ItemsDiffUtil.EXTRA_ITEM_DESCRIPTION));
+            }
 
             rootView.setOnClickListener(new View.OnClickListener() {
                 @Override

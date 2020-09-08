@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import nl.invissvenska.improvedrecyclerview.ImprovedRecyclerView;
-import nl.invissvenska.improvedrecyclerview.ResizeScrollListener;
+import nl.invissvenska.improvedrecyclerview.ImprovedHeaderScrollListener;
 import nl.invissvenska.improvedrecyclerview.sample.adapters.SimpleAdapter;
 
 public class ParallaxFragment extends Fragment implements SimpleAdapter.OnClickListener<String> {
@@ -71,7 +71,7 @@ public class ParallaxFragment extends Fragment implements SimpleAdapter.OnClickL
         adapter.setFooter(R.layout.item_footer);
 
         recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new ResizeScrollListener<>(adapter, layoutManager));
+        recyclerView.addOnScrollListener(new ImprovedHeaderScrollListener<>(adapter, layoutManager));
         adapter.addAll(ITEMS);
     }
 

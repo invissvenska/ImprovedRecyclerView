@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ResizeScrollListener<T extends ImprovedRecyclerAdapter> extends RecyclerView.OnScrollListener {
+public class ImprovedHeaderScrollListener<T extends ImprovedRecyclerAdapter> extends RecyclerView.OnScrollListener {
     private final String TAG = getClass().getSimpleName();
     private final int heightCollapsedItem = 0;
     private int heightExpandedItem;
@@ -17,7 +17,7 @@ public class ResizeScrollListener<T extends ImprovedRecyclerAdapter> extends Rec
     private int dyAbs;
     private T adapter;
 
-    public ResizeScrollListener(T adapter, LinearLayoutManager linearLayoutManager) {
+    public ImprovedHeaderScrollListener(T adapter, LinearLayoutManager linearLayoutManager) {
         this.adapter = adapter;
         this.linearLayoutManager = linearLayoutManager;
         heightExpandedItem = adapter.getHeight();

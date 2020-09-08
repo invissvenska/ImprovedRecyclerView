@@ -1,7 +1,6 @@
 package nl.invissvenska.improvedrecyclerview.sample;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,10 @@ import java.util.Collections;
 import java.util.List;
 
 import nl.invissvenska.improvedrecyclerview.ImprovedRecyclerView;
+import nl.invissvenska.improvedrecyclerview.ResizeScrollListener;
 import nl.invissvenska.improvedrecyclerview.sample.adapters.SimpleAdapter;
 
-public class SimpleFragment extends Fragment implements SimpleAdapter.OnClickListener<String> {
+public class ParallaxFragment extends Fragment implements SimpleAdapter.OnClickListener<String> {
 
     private static final List<String> ITEMS = Collections.unmodifiableList(Arrays.asList(
             "Apple",
@@ -49,7 +49,7 @@ public class SimpleFragment extends Fragment implements SimpleAdapter.OnClickLis
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_simple, container, false);
+        View view = inflater.inflate(R.layout.fragment_parallax, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_view);
         emptyView = view.findViewById(R.id.empty_view);
@@ -60,25 +60,19 @@ public class SimpleFragment extends Fragment implements SimpleAdapter.OnClickLis
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setEmptyView(emptyView);
 
-        adapter = new SimpleAdapter(getContext());
+        adapter = new SimpleAdapter(getContext(), (int) getResources().getDimension(R.dimen.parallax_height));
         adapter.setOnClickListener(this);
 
         adapter.setHeader(R.layout.item_header);
         adapter.setFooter(R.layout.item_footer);
 
         recyclerView.setAdapter(adapter);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!isRemoving()) {
-                    adapter.addAll(ITEMS);
-                }
-            }
-        }, 3000);
+        recyclerView.addOnScrollListener(new ResizeScrollListener<>(adapter, layoutManager));
+        adapter.addAll(ITEMS);
     }
 
     @Override

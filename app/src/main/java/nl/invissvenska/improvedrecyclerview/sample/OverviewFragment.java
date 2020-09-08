@@ -27,6 +27,14 @@ public class OverviewFragment extends Fragment {
             }
         });
 
+        view.findViewById(R.id.button_parallax).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavHostFragment.findNavController(OverviewFragment.this)
+                        .navigate(R.id.action_OverviewFragment_to_ParallaxFragment);
+            }
+        });
+
         view.findViewById(R.id.button_nextpage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

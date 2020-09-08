@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +22,10 @@ public class SimpleAdapter extends ImprovedRecyclerAdapter<String> {
         super(context, Collections.<String>emptyList());
     }
 
+    public SimpleAdapter(Context context, int height) {
+        super(context, Collections.<String>emptyList(), height);
+    }
+
     @Override
     protected ImprovedViewHolder onCreateItemViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
@@ -30,6 +35,21 @@ public class SimpleAdapter extends ImprovedRecyclerAdapter<String> {
     @Override
     public void onBindViewHolder(@NonNull ImprovedViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
+    }
+
+    @Override
+    public void onItemBigResize(RecyclerView.ViewHolder viewHolder, int position, int dyAbs) {
+
+    }
+
+    @Override
+    public void onItemSmallResize(RecyclerView.ViewHolder viewHolder, int position, int dyAbs) {
+
+    }
+
+    @Override
+    public void onItemInit(RecyclerView.ViewHolder viewHolder) {
+
     }
 
     public class TestViewHolder extends ImprovedViewHolder<String> {
